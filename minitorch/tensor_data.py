@@ -94,22 +94,12 @@ def broadcast_index(
 
     """
     # TODO: Implement for Task 2.2.
-    rev_big_shape = big_shape[::-1]
-    rev_shape = shape[::-1]
-    rev_big_index = big_index[::-1]
-
-    for i in range(len(rev_big_shape)):
-        if i >= len(rev_shape):
-            out_index[len(rev_big_shape) - 1 - i] = 0
+    offset = len(big_shape) - len(shape)
+    for i in range(len(shape)):
+        if shape[i] == 1:
+            out_index[i] = 0
         else:
-            if rev_big_shape[i] == rev_shape[i]:
-                out_index[len(rev_big_shape) - 1 - i] = rev_big_index[i]
-            elif rev_big_shape[i] == 1:
-                out_index[len(rev_big_shape) - 1 - i] = 0
-            elif rev_shape[i] == 1:
-                out_index[len(rev_big_shape) - 1 - i] = rev_big_index[i]
-            else:
-                raise IndexingError("Cannot broadcast shapes")
+            out_index[i] = big_index[i + offset]
 
 
 def shape_broadcast(shape1: UserShape, shape2: UserShape) -> UserShape:
