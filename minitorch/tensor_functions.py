@@ -125,7 +125,7 @@ class Mul(Function):
         t1, t2 = ctx.saved_values
         return (
             grad_output.f.mul_zip(grad_output, t2),
-            grad_output.f.mul_zip(grad_output, t1),
+            grad_output.f.mul_zip(t1, grad_output),
         )
 
 
@@ -142,7 +142,8 @@ class Sigmoid(Function):
         """Compute the gradient of the sigmoid function"""
         (s,) = ctx.saved_values
         return grad_output.f.mul_zip(
-            grad_output, s.f.mul_zip(s, s.f.add_zip(s.f.neg_map(s), s.f.id_map(s)))
+            s.f.mul_zip(s, 1 + s.f.neg_map(s)),
+            grad_output,
         )
 
 
@@ -157,7 +158,7 @@ class ReLU(Function):
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         """Compute the gradient of the ReLU function"""
         (a,) = ctx.saved_values
-        return grad_output.f.relu_back_zip(grad_output, a)
+        return grad_output.f.relu_back_zip(a, grad_output)
 
 
 class Log(Function):
@@ -171,7 +172,7 @@ class Log(Function):
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         """Compute the gradient of the natural logarithm"""
         (a,) = ctx.saved_values
-        return grad_output.f.log_back_zip(grad_output, a)
+        return grad_output.f.log_back_zip(a, grad_output)
 
 
 class Exp(Function):
@@ -185,7 +186,7 @@ class Exp(Function):
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         """Compute the gradient of the exponential function"""
         (s,) = ctx.saved_values
-        return grad_output.f.mul_zip(grad_output, s)
+        return grad_output.f.mul_zip(s, grad_output)
 
 
 class Sum(Function):
@@ -193,14 +194,16 @@ class Sum(Function):
     def forward(ctx: Context, a: Tensor, dim: Tensor) -> Tensor:
         """Sum the tensor along a specific dimension"""
         ctx.save_for_backward(a.shape)
+        # ctx.save_for_backward(dim)
         return a.f.add_reduce(a, int(dim.item()))
 
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
         """Compute the gradient of the sum"""
         a = ctx.saved_values[0]
+        # dim = ctx.saved_values[1]
         input_shape = a.shape
-        return grad_output.expand(input_shape)  # fix later in Task 2_4
+        return grad_output.expand(input_shape)
 
 
 class LT(Function):
@@ -419,6 +422,7 @@ def tensor(
 def grad_central_difference(
     f: Any, *vals: Tensor, arg: int = 0, epsilon: float = 1e-6, ind: UserIndex
 ) -> float:
+    """Compute the gradient with central difference."""
     x = vals[arg]
     up = zeros(x.shape)
     up[ind] = epsilon
