@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable, Tuple, Protocol
+from typing import Any, Iterable, Tuple, Protocol, List
 
 
 # ## Task 1.1
@@ -77,14 +77,15 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
 
     """
     visited = set()
-    partial_order = []
+    partial_order: List[Variable] = []
 
     def dfs(v: Variable) -> None:
-        if v.unique_id in visited:
+        if v.unique_id in visited or v.is_constant():
             return
         visited.add(v.unique_id)
         for parent in v.parents:
-            dfs(parent)
+            if not parent.is_constant():
+                dfs(parent)
         partial_order.append(v)
 
     dfs(variable)

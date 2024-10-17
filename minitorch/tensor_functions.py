@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from math import exp
 import random
 from typing import TYPE_CHECKING
 
@@ -179,8 +180,9 @@ class Exp(Function):
     @staticmethod
     def forward(ctx: Context, a: Tensor) -> Tensor:
         """Apply the exponential function elementwise to the tensor"""
-        ctx.save_for_backward(a)
-        return a.f.exp_map(a)
+        exp_a = a.f.exp_map(a)
+        ctx.save_for_backward(exp_a)
+        return exp_a
 
     @staticmethod
     def backward(ctx: Context, grad_output: Tensor) -> Tensor:
@@ -193,41 +195,46 @@ class Sum(Function):
     @staticmethod
     def forward(ctx: Context, a: Tensor, dim: Tensor) -> Tensor:
         """Sum the tensor along a specific dimension"""
-        ctx.save_for_backward(a.shape)
-        # ctx.save_for_backward(dim)
+        ctx.save_for_backward(a.shape, dim)
         return a.f.add_reduce(a, int(dim.item()))
 
     @staticmethod
-    def backward(ctx: Context, grad_output: Tensor) -> Tensor:
+    def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, float]:
         """Compute the gradient of the sum"""
-        a = ctx.saved_values[0]
+        # a_shape = ctx.saved_values[0]
         # dim = ctx.saved_values[1]
-        input_shape = a.shape
-        return grad_output.expand(input_shape)
+        _,_ = ctx.saved_values
+        # return grad_output.expand(a_shape)
+        return grad_output, 0.0
+
 
 
 class LT(Function):
     @staticmethod
     def forward(ctx: Context, t1: Tensor, t2: Tensor) -> Tensor:
         """Elementwise less-than comparison"""
+        ctx.save_for_backward(t1.shape, t2.shape)
         return t1.f.lt_zip(t1, t2)
 
     @staticmethod
-    def backward(ctx: Context, grad_output: Tensor) -> Tuple[None, None]:
+    def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, Tensor]:
         """No gradient for comparison operations"""
-        return None, None
+        a_shape, b_shape = ctx.saved_values
+        return zeros(a_shape), zeros(b_shape)
 
 
 class EQ(Function):
     @staticmethod
     def forward(ctx: Context, t1: Tensor, t2: Tensor) -> Tensor:
         """Elementwise equality comparison"""
+        ctx.save_for_backward(t1.shape, t2.shape)
         return t1.f.eq_zip(t1, t2)
 
     @staticmethod
-    def backward(ctx: Context, grad_output: Tensor) -> Tuple[None, None]:
+    def backward(ctx: Context, grad_output: Tensor) -> Tuple[Tensor, Tensor]:
         """No gradient for comparison operations"""
-        return None, None
+        a_shape, b_shape = ctx.saved_values
+        return zeros(a_shape), zeros(b_shape)
 
 
 class IsClose(Function):
