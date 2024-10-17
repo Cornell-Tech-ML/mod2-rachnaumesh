@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from math import exp
 import random
 from typing import TYPE_CHECKING
 
@@ -203,10 +202,9 @@ class Sum(Function):
         """Compute the gradient of the sum"""
         # a_shape = ctx.saved_values[0]
         # dim = ctx.saved_values[1]
-        _,_ = ctx.saved_values
+        _, _ = ctx.saved_values
         # return grad_output.expand(a_shape)
         return grad_output, 0.0
-
 
 
 class LT(Function):

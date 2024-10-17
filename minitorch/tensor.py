@@ -29,6 +29,8 @@ from .tensor_functions import (
     All,
     IsClose,
     Sum,
+    View,
+    tensor,
 )
 
 if TYPE_CHECKING:
@@ -370,6 +372,7 @@ class Tensor:
 
     def sum(self, dim: Optional[int] = None) -> Tensor:
         """Sum the tensor along a specific dimension."""
+        self.zero_grad_()
         if dim is None:
             return Sum.apply(self.contiguous().view(self.size), self._ensure_tensor(0))
         else:
@@ -377,6 +380,7 @@ class Tensor:
 
     def mean(self, dim: Optional[int] = None) -> Tensor:
         """Mean of the tensor along a specific dimension."""
+        self.zero_grad_()
         if dim is None:
             return self.sum() / self.size
         else:
@@ -384,13 +388,13 @@ class Tensor:
 
     def permute(self, *dims: int) -> Tensor:
         """Permute the dimensions of the tensor."""
-        return Permute.apply(
-            self, Tensor.make(list(dims), (len(dims),), backend=self.backend)
-        )
+        self.zero_grad_()
+        return Permute.apply(self, tensor(list(dims)))
 
     def view(self, *shape: int) -> Tensor:
         """Returns a new tensor with the same data but a different shape."""
-        return Tensor.make(self._tensor._storage, shape, backend=self.backend)
+        self.zero_grad_()
+        return View.apply(self, tensor(list(shape)))
 
     def zero_grad_(self) -> None:
         """Sets gradient to None"""
