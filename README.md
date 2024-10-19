@@ -60,39 +60,29 @@ Number of Hidden layers = 15
 
 ### Dataset 3: Split
 
-#### Training Output Image and Graph
+Number of Hidden layers = 24
 
-<img src="split/Screenshot 2024-09-26 at 6.38.02 PM.png" alt="Training Graph - Split" width="50%" />
+#### Hyperparameters and Model Output
 
-#### Parameters
+<img src="images/split2.png" width="50%" />
 
-<img src="split/Screenshot 2024-09-26 at 6.51.34 PM.png" alt="Model Parameters - Split" width="50%" />
+#### Training Graph and Logs
 
-#### Training Logs
-
-<p float="left">
-  <img src="split/Screenshot 2024-09-26 at 6.39.07 PM.png" alt="Training Logs - Split - 1" width="45%" />
-  <img src="split/Screenshot 2024-09-26 at 6.39.23 PM.png" alt="Training Logs - Split - 2" width="45%" />
-</p>
+<img src="images/split3.png" width="50%" />
 
 ---
 
 ### Dataset 4: XOR
 
-#### Training Output Image and Graph
+Number of Hidden layers = 
 
-<img src="xor/Screenshot 2024-09-26 at 6.44.39 PM.png" alt="Training Graph - XOR" width="50%" />
+#### Hyperparameters and Model Output
 
-#### Parameters
+<img src="images/xor2.png" width="50%" />
 
-<img src="xor/Screenshot 2024-09-26 at 6.49.39 PM.png" alt="Model Parameters - XOR" width="50%" />
+#### Training Graph and Logs
 
-#### Training Logs
-
-<p float="left">
-  <img src="xor/Screenshot 2024-09-26 at 6.45.10 PM.png" alt="Training Logs - XOR - 1" width="45%" />
-  <img src="xor/Screenshot 2024-09-26 at 6.45.21 PM.png" alt="Training Logs - XOR - 2" width="45%" />
-</p>
+<img src="images/xor3.png" width="50%" />
 
 ---
 
