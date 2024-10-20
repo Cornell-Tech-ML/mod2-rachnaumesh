@@ -74,7 +74,7 @@ Number of Hidden layers = 24
 
 ### Dataset 4: XOR
 
-Number of Hidden layers = 
+Number of Hidden layers =
 
 #### Hyperparameters and Model Output
 

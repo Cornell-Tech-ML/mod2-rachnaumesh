@@ -34,7 +34,7 @@ class Linear(minitorch.Module):
         self.out_size = out_size
 
     def forward(self, x):
-        reshaped_x = x.view(*x.shape, 1)  
+        reshaped_x = x.view(*x.shape, 1)
         reshaped_weights = self.weights.value.view(
             1, *self.weights.value.shape
         )
